@@ -7,7 +7,12 @@ import TransferModal from "./modal/TransferModal";
 
 Modal.setAppElement("#__next");
 
-function Header({ walletAddress, sanityTokens, connectWallet }) {
+function Header({
+  walletAddress,
+  sanityTokens,
+  thirdWebTokens,
+  connectWallet,
+}) {
   const router = useRouter();
   const customStyles = {
     content: {
@@ -28,12 +33,19 @@ function Header({ walletAddress, sanityTokens, connectWallet }) {
     <Wrapper>
       <Title>Assets</Title>
       <ButtonsContainer>
-        <WalletLink>
-          <WalletLinkTitle>Wallet Connected</WalletLinkTitle>
-          <WalletAddress>
-            {walletAddress.slice(0, 7)}...{walletAddress.slice(35)}
-          </WalletAddress>
-        </WalletLink>
+        {walletAddress ? (
+          <WalletLink>
+            <WalletLinkTitle>Wallet Connected</WalletLinkTitle>
+            <WalletAddress>
+              {(walletAddress || "").slice(0, 7)}...
+              {(walletAddress || "").slice(35)}
+            </WalletAddress>
+          </WalletLink>
+        ) : (
+          <Button onClick={() => connectWallet("injected")}>
+            Connect Wallet
+          </Button>
+        )}
         <Button style={{ backgroundColor: "#3773f5", color: "#000" }}>
           Buy / Sell
         </Button>
@@ -46,7 +58,11 @@ function Header({ walletAddress, sanityTokens, connectWallet }) {
         onRequestClose={() => router.push("/")}
         style={customStyles}
       >
-        <TransferModal sanityTokens={sanityTokens} />
+        <TransferModal
+          sanityTokens={sanityTokens}
+          walletAddress={walletAddress}
+          thirdWebTokens={thirdWebTokens}
+        />
       </Modal>
     </Wrapper>
   );
